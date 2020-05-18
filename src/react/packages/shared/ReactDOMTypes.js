@@ -35,17 +35,17 @@ export type ReactDOMResponderEvent = {
 
 export type ReactDOMEventResponder = ReactEventResponder<
   ReactDOMResponderEvent,
-  ReactDOMResponderContext,
+  ReactDOMResponderContext
 >;
 
 export type ReactDOMEventResponderInstance = ReactEventResponderInstance<
   ReactDOMResponderEvent,
-  ReactDOMResponderContext,
+  ReactDOMResponderContext
 >;
 
 export type ReactDOMFundamentalComponentInstance = ReactFundamentalComponentInstance<
   any,
-  any,
+  any
 >;
 
 export type ReactDOMResponderContext = {

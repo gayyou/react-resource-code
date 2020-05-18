@@ -213,6 +213,8 @@ function ReactBatch(root: _ReactRoot | _ReactSyncRoot) {
   this._children = null;
   this._defer = true;
 }
+// TODO 这个是渲染函数吗？
+
 ReactBatch.prototype.render = function(children: ReactNodeList) {
   invariant(
     this._defer,
@@ -380,6 +382,7 @@ function createRootImpl(
   const hydrationCallbacks =
     (options != null && options.hydrationOptions) || null;
   const root = createContainer(container, tag, hydrate, hydrationCallbacks);
+  console.log(root);
   markContainerAsRoot(root.current, container);
   if (hydrate && tag !== LegacyRoot) {
     const doc =
@@ -514,6 +517,12 @@ setBatchingImplementation(
 
 let warnedAboutHydrateAPI = false;
 
+/**
+ * @desc forceHydrate和普通hydrate有什么区别？在什么场景下会使用到？
+ * @param container
+ * @param forceHydrate
+ * @returns {ReactSyncRoot}
+ */
 function legacyCreateRootFromDOMContainer(
   container: DOMContainer,
   forceHydrate: boolean,
@@ -581,6 +590,7 @@ function legacyRenderSubtreeIntoContainer(
 
   // TODO: Without `any` type, Flow says "Property cannot be accessed on any
   // member of intersection type." Whyyyyyy.
+  // 根据root是否存在判断是否是第一次渲染
   let root: _ReactSyncRoot = (container._reactRootContainer: any);
   let fiberRoot;
   if (!root) {
@@ -589,6 +599,7 @@ function legacyRenderSubtreeIntoContainer(
       container,
       forceHydrate,
     );
+
     fiberRoot = root._internalRoot;
     if (typeof callback === 'function') {
       const originalCallback = callback;
@@ -688,8 +699,17 @@ const ReactDOM: Object = {
     );
   },
 
+  /**
+   * @desc 这个是整个程序的入口
+   * @param element
+   * @param container
+   * @param callback
+   * @returns {*}
+   */
   render(
+    // element是由jsx编译成React.createElement执行后返回的ReactElement
     element: React$Element<any>,
+    // 承载的容器
     container: DOMContainer,
     callback: ?Function,
   ) {

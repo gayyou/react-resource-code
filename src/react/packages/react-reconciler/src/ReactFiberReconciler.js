@@ -187,8 +187,8 @@ export function updateContainerAtExpirationTime(
   callback: ?Function,
 ) {
   // TODO: If this is a nested container, this won't be the root.
+  //
   const current = container.current;
-
   if (__DEV__) {
     if (ReactFiberInstrumentation.debugTool) {
       if (current.alternate === null) {
@@ -311,6 +311,8 @@ export function updateContainer(
   parentComponent: ?React$Component<any, any>,
   callback: ?Function,
 ): ExpirationTime {
+  // 此时传进来处理的是React节点的类型，具体是一个对象，有$$typeof属性
+
   const current = container.current;
   const currentTime = requestCurrentTime();
   if (__DEV__) {
@@ -320,7 +322,9 @@ export function updateContainer(
       warnIfNotScopedWithMatchingAct(current);
     }
   }
+  // 暂挂配置
   const suspenseConfig = requestCurrentSuspenseConfig();
+  // 到期时间
   const expirationTime = computeExpirationForFiber(
     currentTime,
     current,

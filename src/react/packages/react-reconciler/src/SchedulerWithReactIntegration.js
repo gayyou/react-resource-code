@@ -158,6 +158,9 @@ export function cancelCallback(callbackNode: mixed) {
   }
 }
 
+/**
+ * 在符合条件的时候进行执行callback列表
+ */
 export function flushSyncCallbackQueue() {
   if (immediateQueueCallbackNode !== null) {
     const node = immediateQueueCallbackNode;

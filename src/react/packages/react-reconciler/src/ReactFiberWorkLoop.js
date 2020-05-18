@@ -260,7 +260,7 @@ let pendingPassiveEffectsExpirationTime: ExpirationTime = NoWork;
 
 let rootsWithPendingDiscreteUpdates: Map<
   FiberRoot,
-  ExpirationTime,
+  ExpirationTime
 > | null = null;
 
 // Use these to prevent an infinite loop of nested updates
@@ -386,6 +386,7 @@ export function scheduleUpdateOnFiber(
   fiber: Fiber,
   expirationTime: ExpirationTime,
 ) {
+  debugger
   checkForNestedUpdates();
   warnAboutInvalidUpdatesOnClassComponentsInDEV(fiber);
 
@@ -1232,6 +1233,12 @@ export function discreteUpdates<A, B, C, R>(
   }
 }
 
+/**
+ * 如函数名所示，就是不分批来进行
+ * @param fn
+ * @param a
+ * @returns {R}
+ */
 export function unbatchedUpdates<A, R>(fn: (a: A) => R, a: A): R {
   const prevExecutionContext = executionContext;
   executionContext &= ~BatchedContext;

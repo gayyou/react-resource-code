@@ -116,7 +116,7 @@ export type Dependencies = {
   firstContext: ContextDependency<mixed> | null,
   responders: Map<
     ReactEventResponder<any, any>,
-    ReactEventResponderInstance<any, any>,
+    ReactEventResponderInstance<any, any>
   > | null,
 };
 

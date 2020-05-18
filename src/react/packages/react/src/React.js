@@ -61,6 +61,7 @@ import {
   enableScopeAPI,
 } from 'shared/ReactFeatureFlags';
 const React = {
+  // props中children的迭代器
   Children: {
     map,
     forEach,
@@ -75,9 +76,11 @@ const React = {
 
   createContext,
   forwardRef,
+  // TODO layzy的作用？
   lazy,
-  memo,
+  memo,    // 变量进行缓存作用
 
+  // hooks
   useCallback,
   useContext,
   useEffect,

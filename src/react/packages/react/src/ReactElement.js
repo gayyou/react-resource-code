@@ -325,12 +325,14 @@ export function createElement(type, config, children) {
       ref = config.ref;
     }
     if (hasValidKey(config)) {
+      // key会处理成为字符串
       key = '' + config.key;
     }
 
     self = config.__self === undefined ? null : config.__self;
     source = config.__source === undefined ? null : config.__source;
     // Remaining properties are added to a new props object
+    // 取出可自身的、并且不是保留字段的属性到props，作为子组件的props
     for (propName in config) {
       if (
         hasOwnProperty.call(config, propName) &&
@@ -343,6 +345,7 @@ export function createElement(type, config, children) {
 
   // Children can be more than one argument, and those are transferred onto
   // the newly allocated props object.
+  // 本函数第三个参数开始都是children，这个代码块就是将这些children都加进来
   const childrenLength = arguments.length - 2;
   if (childrenLength === 1) {
     props.children = children;
@@ -364,6 +367,7 @@ export function createElement(type, config, children) {
     const defaultProps = type.defaultProps;
     for (propName in defaultProps) {
       if (props[propName] === undefined) {
+        // 如果某些属性没有赋值，就会得到默认值
         props[propName] = defaultProps[propName];
       }
     }
