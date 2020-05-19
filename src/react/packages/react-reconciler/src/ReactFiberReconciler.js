@@ -161,8 +161,6 @@ function scheduleRootUpdate(
   // being called "element".
   update.payload = {element};
 
-  console.log(update)
-
   callback = callback === undefined ? null : callback;
   if (callback !== null) {
     warningWithoutStack(

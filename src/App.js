@@ -43,6 +43,7 @@ class Sub2 extends React.Component {
       isCount: false
     }
     setTimeout(() => {
+      console.log(this)
       this.setState({
         isCount: true
       });

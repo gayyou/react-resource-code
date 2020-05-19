@@ -26,7 +26,6 @@ function Component(props, context, updater) {
   // We initialize the default updater but the real one gets injected by the
   // renderer.
   this.updater = updater || ReactNoopUpdateQueue;
-  window.updater = this;
 }
 
 Component.prototype.isReactComponent = {};

@@ -182,8 +182,8 @@ export function applyDerivedStateFromProps(
 const classComponentUpdater = {
   isMounted,
   enqueueSetState(inst, payload, callback) {
-    // 进入setstate，这里暂时停止阅读
-    const fiber = getInstance(inst);
+    // 进入setstate，来了来了
+    const fiber = getInstance(inst);    // 拿到fibernode，这个或许是react的虚拟dom节点
     const currentTime = requestCurrentTime();
     const suspenseConfig = requestCurrentSuspenseConfig();
     const expirationTime = computeExpirationForFiber(
