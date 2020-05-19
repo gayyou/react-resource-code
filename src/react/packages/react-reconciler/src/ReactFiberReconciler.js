@@ -161,6 +161,8 @@ function scheduleRootUpdate(
   // being called "element".
   update.payload = {element};
 
+  console.log(update)
+
   callback = callback === undefined ? null : callback;
   if (callback !== null) {
     warningWithoutStack(
@@ -328,8 +330,9 @@ export function updateContainer(
   const expirationTime = computeExpirationForFiber(
     currentTime,
     current,
-    suspenseConfig,
+    suspenseConfig
   );
+  console.log('callback', callback, element)
   return updateContainerAtExpirationTime(
     element,
     container,

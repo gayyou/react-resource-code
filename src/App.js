@@ -35,4 +35,3 @@ export function Sub() {
 }
 
 export default App;
-
