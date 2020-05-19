@@ -26,6 +26,7 @@ function Component(props, context, updater) {
   // We initialize the default updater but the real one gets injected by the
   // renderer.
   this.updater = updater || ReactNoopUpdateQueue;
+  window.updater = this;
 }
 
 Component.prototype.isReactComponent = {};
@@ -42,12 +43,17 @@ Component.prototype.isReactComponent = {};
  * callback that will be executed when the call to setState is actually
  * completed.
  *
+ *  use callback will be call and transfer three arguments: state, props and context.
+ *  And the callback will be called after that state is changed.
  * When a function is provided to setState, it will be called at some point in
  * the future (not synchronously). It will be called with the up to date
- * component arguments (state, props, context). These values can be different
- * from this.* because your function may be called after receiveProps but before
- * shouldComponentUpdate, and this new state, props, and context will not yet be
- * assigned to this.
+ * component arguments (state, props, context).
+ *
+ *  it is said that callback arguments will be the new state, but it is not be renew
+ *  on this.
+ * These values can be different from this.* because your function may be called
+ * after receiveProps but before shouldComponentUpdate, and this new state,
+ * props, and context will not yet be assigned to this.
  *
  * @param {object|function} partialState Next partial state or function to
  *        produce next partial state to be merged with current state.
@@ -63,6 +69,7 @@ Component.prototype.setState = function(partialState, callback) {
     'setState(...): takes an object of state variables to update or a ' +
       'function which returns an object of state variables.',
   );
+  debugger
   this.updater.enqueueSetState(this, partialState, callback, 'setState');
 };
 
