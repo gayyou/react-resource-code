@@ -386,7 +386,6 @@ export function scheduleUpdateOnFiber(
   fiber: Fiber,
   expirationTime: ExpirationTime,
 ) {
-  debugger
   checkForNestedUpdates();
   warnAboutInvalidUpdatesOnClassComponentsInDEV(fiber);
 

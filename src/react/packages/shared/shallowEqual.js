@@ -17,10 +17,12 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
  * Returns true when the values of all keys are strictly equal.
  */
 function shallowEqual(objA: mixed, objB: mixed): boolean {
+  // 如果是引用数据类型，那么进行判断地址是否相等。如果是基本数据类型的话，判断是否相等
   if (is(objA, objB)) {
     return true;
   }
 
+  // 此时ab不为基本数据类型
   if (
     typeof objA !== 'object' ||
     objA === null ||
@@ -30,6 +32,7 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
     return false;
   }
 
+  // 此时ab一定为obj数据类型
   const keysA = Object.keys(objA);
   const keysB = Object.keys(objB);
 

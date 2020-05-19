@@ -8,6 +8,7 @@ function App() {
     <div>
       <div>我是父亲容器</div>
       <Sub/>
+      <Sub2/>
     </div>
 
     // <div className="App">
@@ -32,6 +33,26 @@ function App() {
 
 export function Sub() {
   return (<div>我是子容器</div>)
+}
+
+class Sub2 extends React.Component {
+  constructor() {
+    super();
+    console.log(this.setState);
+    this.state = {
+      isCount: false
+    }
+    setTimeout(() => {
+      this.setState({
+        isCount: true
+      });
+    }, 1000);
+  }
+  render() {
+    return (
+      <div>123{this.state.isCount}</div>
+    );
+  }
 }
 
 export default App;
