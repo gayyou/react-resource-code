@@ -310,10 +310,11 @@ export function computeExpirationForFiber(
   // 悬挂配置：不定配置？
   suspenseConfig: null | SuspenseConfig,
 ): ExpirationTime {
+  debugger
   const mode = fiber.mode;
-
+  // batch 分批次模式
   if ((mode & BatchedMode) === NoMode) {
-    // 返回的是32位系统的最大数字，距离截至时间越长，那么其紧急程度就越低，所以这个是最低级别的
+    // 拿到32位系统的最大数字
     return Sync;
   }
 

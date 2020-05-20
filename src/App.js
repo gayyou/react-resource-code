@@ -45,6 +45,9 @@ class Sub2 extends React.Component {
       this.setState({
         isCount: true
       });
+      this.setState({
+        isCount: false
+      });
     }, 1000);
   }
   render() {
