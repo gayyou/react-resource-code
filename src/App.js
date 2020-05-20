@@ -38,12 +38,10 @@ export function Sub() {
 class Sub2 extends React.Component {
   constructor() {
     super();
-    console.log(this.setState);
     this.state = {
       isCount: false
     }
     setTimeout(() => {
-      console.log(this)
       this.setState({
         isCount: true
       });

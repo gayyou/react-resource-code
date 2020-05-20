@@ -307,14 +307,17 @@ export function requestCurrentTime() {
 export function computeExpirationForFiber(
   currentTime: ExpirationTime,
   fiber: Fiber,
+  // 悬挂配置：不定配置？
   suspenseConfig: null | SuspenseConfig,
 ): ExpirationTime {
   const mode = fiber.mode;
+
   if ((mode & BatchedMode) === NoMode) {
+    // 返回的是32位系统的最大数字，距离截至时间越长，那么其紧急程度就越低，所以这个是最低级别的
     return Sync;
   }
 
-  const priorityLevel = getCurrentPriorityLevel();
+  const priorityLevel = getCurrentPriorityLevel();  // 拿到优先级别的话，是怎么来进行获取的？
   if ((mode & ConcurrentMode) === NoMode) {
     return priorityLevel === ImmediatePriority ? Sync : Batched;
   }
