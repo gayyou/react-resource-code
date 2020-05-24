@@ -115,13 +115,17 @@ function getContextForSubtree(
   parentComponent: ?React$Component<any, any>,
 ): Object {
   if (!parentComponent) {
+    // 如果是根组件的话，那么就返回一个空组件上下文
     return emptyContextObject;
   }
 
+  // 拿到父组件所对应的instance
   const fiber = getInstance(parentComponent);
   const parentContext = findCurrentUnmaskedContext(fiber);
 
   if (fiber.tag === ClassComponent) {
+    // 如果fiber是；类组件的话。。。特殊处理
+    // 这个肯恩是进行向下兼容版本
     const Component = fiber.type;
     if (isLegacyContextProvider(Component)) {
       return processChildContext(fiber, Component, parentContext);
@@ -156,6 +160,7 @@ function scheduleRootUpdate(
     }
   }
 
+  // 创造更新选项
   const update = createUpdate(expirationTime, suspenseConfig);
   // Caution: React DevTools currently depends on this property
   // being called "element".
