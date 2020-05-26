@@ -53,6 +53,12 @@ const MAGIC_NUMBER_OFFSET = Batched - 1;
 export function msToExpirationTime(ms: number): ExpirationTime {
   // 使用偏移量，防止产生0，与nowork相同
   // Always add an offset so that we don't clash with the magic number for NoWork.
+  // TODO 这句话是正确的？
+  //  MAGIC偏移数字设为31位最大的数字而不是32位的最大数字，是因为最后处理的结果必须
+  //  在32位的最大数字范围内（31位的最大减去最小，范围肯定在32位以内）
+
+  // 这个式子可以看做 - ((ms / 10 | 0) + MAGIC Number ，
+  // 如果ms越大，那么前半部分就越小，处理的结果就越小，那么说明到期时间越小。而到期时间越小的话，优先级别就越高？？
   return MAGIC_NUMBER_OFFSET - ((ms / UNIT_SIZE) | 0);
 }
 
@@ -66,9 +72,7 @@ function ceiling(num: number, precision: number): number {
 }
 
 /**
- * @desc 计算优先级别，有两个概念，第一个是到期时间，第二个是bucket
- * 先说bucket，代表着在多大区间中所有的任务都归为一个bucket，到时候一起处理
- * 后来说到期时间，也就是期限时间大小，越大的话，优先级别越小，那么最后的出来的优先级别就越小，越慢处理
+ * @desc 根据bucketSize大小进行分配bucket，计算以bucket为单位的时间并且向上取整
  * @param currentTime
  * @param expirationInMs
  * @param bucketSizeMs
@@ -81,8 +85,14 @@ function computeExpirationBucket(
 ): ExpirationTime {
   return (
     MAGIC_NUMBER_OFFSET -
+    // ceil的作用是以第二个参数为单位进行向上取整
     ceiling(
+      // 第一个参数全都是处理完毕的，以10ms为单位
+      // 下面这个式子可以转为 MAGIC_NUMBER_OFFSET - (MAGIC_NUMBER_OFFSET - ((ms / UNIT_SIZE) | 0)) + expirationInMs / UNIT_SIZE
+      // 所以前面偏移量就可以减去了，TODO 设置偏移量的目的已经说明了，就是保证currentTime不要为0，为0代表着是nowork
+      // 如果currentTime相同的话，到期时间bucket的选择取决于到期时间
       MAGIC_NUMBER_OFFSET - currentTime + expirationInMs / UNIT_SIZE,
+      // 如果bucketMs为250，那么的第二个参数就是25，所以是以25个UNIT_SIZE为单位进行处理，所以就是250ms一波
       bucketSizeMs / UNIT_SIZE,
     )
   );
@@ -121,6 +131,7 @@ export function computeAsyncExpiration(
  * @returns {ExpirationTime}
  */
 export function computeSuspenseExpiration(
+  // ms是处理后的时间
   currentTime: ExpirationTime,
   timeoutMs: number,
 ): ExpirationTime {
@@ -165,6 +176,7 @@ export function inferPriorityFromExpirationTime(
   currentTime: ExpirationTime,
   expirationTime: ExpirationTime,
 ): ReactPriorityLevel {
+  // 按照优先级别进行排序
   if (expirationTime === Sync) {
     return ImmediatePriority;
   }
@@ -174,6 +186,7 @@ export function inferPriorityFromExpirationTime(
   const msUntil =
     expirationTimeToMs(expirationTime) - expirationTimeToMs(currentTime);
   if (msUntil <= 0) {
+    // 说明已经过期了，此时要直接执行
     return ImmediatePriority;
   }
   if (msUntil <= HIGH_PRIORITY_EXPIRATION + HIGH_PRIORITY_BATCH_SIZE) {
