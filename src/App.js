@@ -1,11 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import invariant from "./react/packages/shared/invariant";
+import {ThemeContext} from "./labs/context/theme";
+import Button from "./labs/context/Button";
 
 function App() {
   return (
     <div>
+      <ThemeContext.Provider value={{theme: '#red', triggerTheme: () => {console.log('我是切换主题的函数')}}}>
+        <Button/>
+      </ThemeContext.Provider>
       <div>我是父亲容器</div>
       <Sub/>
       <Sub2/>
@@ -44,6 +47,9 @@ class Sub2 extends React.Component {
     setTimeout(() => {
       this.setState({
         isCount: true
+      });
+      this.setState({
+        isCount: false
       });
     }, 1000);
   }

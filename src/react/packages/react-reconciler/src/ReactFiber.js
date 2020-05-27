@@ -120,13 +120,9 @@ export type Dependencies = {
   > | null,
 };
 
-// A Fiber is work on a Component that needs to be done or was done. There can
-// be more than one per component.
+// A Fiber is work on a Component that needs to be done or was done. There can be more than one per component.
 export type Fiber = {|
-  // These first fields are conceptually members of an Instance. This used to
-  // be split into a separate type and intersected with the other Fiber fields,
-  // but until Flow fixes its intersection bugs, we've merged them into a
-  // single type.
+  // These first fields are conceptually members of an Instance. This used to be split into a separate type and intersected with the other Fiber fields, but until Flow fixes its intersection bugs, we've merged them into a single type.
 
   // An Instance is shared between all versions of a component. We can easily
   // break this out into a separate object to avoid copying so much to the
@@ -134,6 +130,7 @@ export type Fiber = {|
   // minimize the number of objects created during the initial render.
 
   // Tag identifying the type of fiber.
+  // fiber组件的标志，也就是类型的标志，有类组件或者函数式组件，还有很多内建的组件
   tag: WorkTag,
 
   // Unique identifier of this child.
@@ -162,9 +159,10 @@ export type Fiber = {|
   return: Fiber | null,
 
   // Singly Linked List Tree Structure.
-  child: Fiber | null,
-  sibling: Fiber | null,
-  index: number,
+  // 树形结构的一些属性
+  child: Fiber | null,  // 子孩子
+  sibling: Fiber | null, // 下一个孩子
+  index: number,         // 下标
 
   // The ref last used to attach this node.
   // I'll avoid adding an owner field for prod and model that as functions.
@@ -210,8 +208,9 @@ export type Fiber = {|
   // This is used to quickly determine if a subtree has no pending changes.
   childExpirationTime: ExpirationTime,
 
-  // This is a pooled version of a Fiber. Every fiber that gets updated will
-  // eventually have a pair. There are cases when we can clean up pairs to save
+  // TODO
+  //  alternate 的中文含义是更改，那么有可能是本节点的新节点的引入来进行更改数据？？？
+  // This is a pooled version of a Fiber. Every fiber that gets updated will eventually have a pair. There are cases when we can clean up pairs to save
   // memory if we need to.
   alternate: Fiber | null,
 

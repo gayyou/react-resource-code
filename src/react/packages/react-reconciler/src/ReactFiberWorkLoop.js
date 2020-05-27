@@ -292,13 +292,16 @@ let currentEventTime: ExpirationTime = NoWork;
 export function requestCurrentTime() {
   if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
     // We're inside React, so it's fine to read the actual time.
+    // 将当前的系统时间转为React内部能够识别的时间，也就是偏移量 + 进行截取
     return msToExpirationTime(now());
   }
   // We're not inside React, so we may be in the middle of a browser event.
   if (currentEventTime !== NoWork) {
+    // 如果当前事件时间不为 Nowork的话，也就是0，那么直接返回
     // Use the same start time for all updates until we enter React again.
     return currentEventTime;
   }
+  // react项目在第一次初始化的时候，currentEventTime是NoWork，此时进行初始化处理
   // This is the first update since React yielded. Compute a new start time.
   currentEventTime = msToExpirationTime(now());
   return currentEventTime;
@@ -311,18 +314,23 @@ export function computeExpirationForFiber(
   suspenseConfig: null | SuspenseConfig,
 ): ExpirationTime {
   const mode = fiber.mode;
-
+  // batch 分批次模式
+  // 这么搞其实是为了装逼使用，其实直接协程 mode !== BatchedMode 即可
   if ((mode & BatchedMode) === NoMode) {
-    // 返回的是32位系统的最大数字，距离截至时间越长，那么其紧急程度就越低，所以这个是最低级别的
+    // 这句话的意思就是mode !== BatchedMode
+    // 拿到32位系统的最大数字
     return Sync;
   }
 
-  const priorityLevel = getCurrentPriorityLevel();  // 拿到优先级别的话，是怎么来进行获取的？
+  const priorityLevel = getCurrentPriorityLevel();  // TODO 获取的流程长什么样子
+  // 不为 ConcurrentMode 的时候进行处理
   if ((mode & ConcurrentMode) === NoMode) {
+    // 如果mode与ConcurrentMode不同，那么看看优先级别是否是最高，如果是最高的话，那么是Sync，即同步，否则是批量优先级别
     return priorityLevel === ImmediatePriority ? Sync : Batched;
   }
 
   if ((executionContext & RenderContext) !== NoContext) {
+    // 接下来进行查看上下文的关系
     // Use whatever time we're already rendering
     // TODO: Should there be a way to opt out, like with `runWithPriority`?
     return renderExpirationTime;
@@ -330,6 +338,7 @@ export function computeExpirationForFiber(
 
   let expirationTime;
   if (suspenseConfig !== null) {
+    // 悬挂配置来设定过期时间 TODO 那么悬挂配置是怎么来的
     // Compute an expiration time based on the Suspense timeout.
     expirationTime = computeSuspenseExpiration(
       currentTime,
@@ -361,8 +370,7 @@ export function computeExpirationForFiber(
   // If we're in the middle of rendering a tree, do not update at the same
   // expiration time that is already rendering.
   // TODO: We shouldn't have to do this if the update is on a different root.
-  // Refactor computeExpirationForFiber + scheduleUpdate so we have access to
-  // the root when we check for this condition.
+  // Refactor computeExpirationForFiber + scheduleUpdate so we have access to the root when we check for this condition.
   if (workInProgressRoot !== null && expirationTime === renderExpirationTime) {
     // This is a trick to move this update into a separate batch
     expirationTime -= 1;
