@@ -2,35 +2,22 @@ import React from 'react';
 import './App.css';
 import {ThemeContext} from "./labs/context/theme";
 import Button from "./labs/context/Button";
+import UseContext from "./labs/context/UseContext";
+import {UseEffect} from "./labs/hooks/HooksTest";
+import {useState} from "./react/packages/react/src/ReactHooks";
+import ReduxView from "./labs/reduxTest/ReduxView";
 
 function App() {
+  let [name, setName] = useState(1);
+
+  setTimeout(() => {
+    setName(name + 1);
+  }, 1000);
+
   return (
     <div>
-      <ThemeContext.Provider value={{theme: '#red', triggerTheme: () => {console.log('我是切换主题的函数')}}}>
-        <Button/>
-      </ThemeContext.Provider>
-      <div>我是父亲容器</div>
-      <Sub/>
-      <Sub2/>
+      <ReduxView/>
     </div>
-
-    // <div className="App">
-
-      // {/*<header className="App-header">*/}
-      // {/*  <img src={logo} className="App-logo" alt="logo" />*/}
-      // {/*  <p>*/}
-      // {/*    Edit <code>src/App.js</code> and save to reload.*/}
-      // {/*  </p>*/}
-      // {/*  <a*/}
-      // {/*    className="App-link"*/}
-      // {/*    href="https://reactjs.org"*/}
-      // {/*    target="_blank"*/}
-      // {/*    rel="noopener noreferrer"*/}
-      // {/*  >*/}
-      // {/*    Learn React*/}
-      // {/*  </a>*/}
-      // {/*</header>*/}
-    // </div>
   );
 }
 
