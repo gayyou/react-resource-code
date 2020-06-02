@@ -6,6 +6,7 @@ import {triggerTodo} from "../../redux/actions";
 
 function TodoList(props) {
   let {todoList, triggerTodo} = props;
+  console.log('重新渲染了')
   return (<div className="todo-list-container">
     {todoList && todoList.length && todoList.map(item => (
       <div className="todo-item"

@@ -34,8 +34,7 @@ const selectA = (state) => state.a;
 const selectA1 = createSelector(selectA, (a) => {
   console.log('更新a' + a);
   return a;
-})
-console.log(1111);
+});
 selectA1(state);
 state.a = 'weybn2';
 setTimeout(() => {
