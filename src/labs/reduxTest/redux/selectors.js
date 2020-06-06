@@ -20,24 +20,3 @@ export const getTodoListByFilter = (state) => {
 
   return list;
 }
-
-let state = {
-  a: 'weybn',
-  b: {
-    name: 'weybn-b'
-  }
-};
-
-const selectA = (state) => state.a;
-
-// 这个东西仅仅是一个shallow strong type check
-const selectA1 = createSelector(selectA, (a) => {
-  console.log('更新a' + a);
-  return a;
-});
-selectA1(state);
-state.a = 'weybn2';
-setTimeout(() => {
-  selectA1({a: 'weybn2132132132'});
-}, 100);
-

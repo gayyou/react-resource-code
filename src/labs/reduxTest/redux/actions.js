@@ -1,5 +1,6 @@
 import {ADD_ACTION, SET_FILTER, TRIGGER_ACTION} from "./ACTION_TYPE";
 import {ALL, RESOLVE, UN_RESOlVLE} from "./TODO_TYPE";
+import {getTodo} from "./fakeApi/fakeFetchData";
 
 let uid = 1;
 
@@ -11,6 +12,14 @@ export const addTodo = (content) => ({
     status: UN_RESOlVLE
   }
 });
+
+export const fetchData = () => {
+  return (dispatch) => {
+    return getTodo().then(res => {
+      dispatch(addTodo(res.content));
+    })
+  }
+}
 
 export const triggerTodo = (id) => ({
   type: TRIGGER_ACTION,

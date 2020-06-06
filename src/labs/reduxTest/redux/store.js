@@ -1,6 +1,12 @@
 import {createStore} from "redux";
 import reducer from './reducers';
+import {logger} from "./middleware/logger";
+import thunkMiddleware from 'redux-thunk'
+import {fetchData} from "./actions";
 
-let store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(
+  logger,
+  thunkMiddleware
+));
 
-export default store;
+export default createStore(reducer);
