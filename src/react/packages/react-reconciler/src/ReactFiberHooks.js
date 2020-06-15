@@ -189,7 +189,7 @@ let didScheduleRenderPhaseUpdate: boolean = false;
 // Lazily created map of render-phase updates
 let renderPhaseUpdates: Map<
   UpdateQueue<any, any>,
-  Update<any, any>,
+  Update<any, any>
 > | null = null;
 // Counter to prevent infinite loops.
 let numberOfReRenders: number = 0;
@@ -824,7 +824,7 @@ function mountState<S>(
     lastRenderedState: (initialState: any),
   });
   const dispatch: Dispatch<
-    BasicStateAction<S>,
+    BasicStateAction<S>
   > = (queue.dispatch = (dispatchAction.bind(
     null,
     // Flow doesn't know this is non-null, but we do.

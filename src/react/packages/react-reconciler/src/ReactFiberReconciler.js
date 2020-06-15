@@ -124,8 +124,6 @@ function getContextForSubtree(
   const parentContext = findCurrentUnmaskedContext(fiber);
 
   if (fiber.tag === ClassComponent) {
-    // 如果fiber是；类组件的话。。。特殊处理
-    // 这个肯恩是进行向下兼容版本
     const Component = fiber.type;
     if (isLegacyContextProvider(Component)) {
       return processChildContext(fiber, Component, parentContext);

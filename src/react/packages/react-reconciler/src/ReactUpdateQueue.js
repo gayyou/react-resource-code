@@ -238,7 +238,7 @@ function appendUpdateToQueue<State>(
 
 export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
   // Update queues are created lazily.
-  const alternate = fiber.alternate;
+  const alternate = fiber.alternate;          // fiber.alternate 可以看作是当前节点的下一个节点的状态，这样可以使用diff算法来进行减少更新幅度
   let queue1;
   let queue2;
   if (alternate === null) {

@@ -307,6 +307,13 @@ export function requestCurrentTime() {
   return currentEventTime;
 }
 
+/**
+ * @desc 计算Fiber更新的到期时间
+ * @param currentTime
+ * @param fiber
+ * @param suspenseConfig
+ * @return {ExpirationTime|number|*}
+ */
 export function computeExpirationForFiber(
   currentTime: ExpirationTime,
   fiber: Fiber,
