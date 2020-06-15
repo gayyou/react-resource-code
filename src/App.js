@@ -7,38 +7,14 @@ import {UseEffect} from "./labs/hooks/HooksTest";
 import {useState} from "./react/packages/react/src/ReactHooks";
 import ReduxView from "./labs/reduxTest/ReduxView";
 
-function App() {
+
+function App(props) {
+  console.log(props);
   return (
     <div>
-      <ReduxView/>
+
     </div>
   );
-}
-
-export function Sub() {
-  return (<div>我是子容器</div>)
-}
-
-class Sub2 extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      isCount: false
-    }
-    setTimeout(() => {
-      this.setState({
-        isCount: true
-      });
-      this.setState({
-        isCount: false
-      });
-    }, 1000);
-  }
-  render() {
-    return (
-      <div>123{this.state.isCount}</div>
-    );
-  }
 }
 
 export default App;

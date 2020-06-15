@@ -50,7 +50,6 @@
     "react-dom": "^16.13.0",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
     "resolve": "1.15.0",
     "resolve-url-loader": "3.1.1",
     "sass-loader": "8.0.2",
@@ -142,7 +141,11 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.8.3",
+    "antd": "^4.3.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "redux-devtools": "^3.5.0",
+    "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0"
   }
 }

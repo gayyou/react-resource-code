@@ -6,7 +6,7 @@ const initState = ALL;
 export default function (state = initState, action) {
   switch (action.type) {
     case SET_FILTER: {
-      return action.payload.status
+      return action.payload.status;
     }
   }
 

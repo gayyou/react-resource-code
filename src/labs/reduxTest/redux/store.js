@@ -10,5 +10,3 @@ const store = createStore(reducer, applyMiddleware(
 ));
 
 export default store;
-
-store.dispatch(fetchData());
