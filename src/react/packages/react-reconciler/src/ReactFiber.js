@@ -120,6 +120,9 @@ export type Dependencies = {
   > | null,
 };
 
+/**
+ * @desc fiber是一个复杂链表的结构，即每个节点具有三个指针，下个节点、旁边节点、父亲节点。这样的结构足以代表树状结构
+ */
 // A Fiber is work on a Component that needs to be done or was done. There can be more than one per component.
 export type Fiber = {|
   // These first fields are conceptually members of an Instance. This used to be split into a separate type and intersected with the other Fiber fields, but until Flow fixes its intersection bugs, we've merged them into a single type.

@@ -7,6 +7,10 @@
  * @flow
  */
 
+/**
+ * @desc 我这边的查阅路径是先看看  update，然后再看看schedule
+ */
+
 // UpdateQueue is a linked list of prioritized updates.
 //
 // Like fibers, update queues come in pairs: a current queue, which represents
@@ -17,7 +21,7 @@
 //
 // Both queues share a persistent, singly-linked list structure. To schedule an
 // update, we append it to the end of both queues. Each queue maintains a
-// pointer to first update in the persistent list that hasn't been processed.
+// pointer to first update in the persistent list that hasn't been processed.    ->  first update 理解为指针指向的第一个linked node
 // The work-in-progress pointer always has a position equal to or greater than
 // the current queue, since we always work on that one. The current queue's
 // pointer is only updated during the commit phase, when we swap in the
@@ -113,10 +117,10 @@ import warningWithoutStack from 'shared/warningWithoutStack';
 import {getCurrentPriorityLevel} from './SchedulerWithReactIntegration';
 
 export type Update<State> = {
-  expirationTime: ExpirationTime,
-  suspenseConfig: null | SuspenseConfig,
+  expirationTime: ExpirationTime,                  // 更新的到期时间
+  suspenseConfig: null | SuspenseConfig,           // 悬挂配置
 
-  tag: 0 | 1 | 2 | 3,
+  tag: 0 | 1 | 2 | 3,                              // 暂且不知道作用
   payload: any,
   callback: (() => mixed) | null,
 
@@ -164,6 +168,7 @@ if (__DEV__) {
   };
 }
 
+// todo 什么时候会创建队列?
 export function createUpdateQueue<State>(baseState: State): UpdateQueue<State> {
   const queue: UpdateQueue<State> = {
     baseState,
@@ -248,30 +253,40 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
     if (queue1 === null) {
       queue1 = fiber.updateQueue = createUpdateQueue(fiber.memoizedState);
     }
+    // 这里出来的时候，仅仅有queue1，queue2是空，那么queue1大于queue2
   } else {
     // There are two owners.
     queue1 = fiber.updateQueue;
     queue2 = alternate.updateQueue;
     if (queue1 === null) {
       if (queue2 === null) {
+        // 从状态中进行创建新的队列，不过这两条队列都是空的
         // Neither fiber has an update queue. Create new ones.
         queue1 = fiber.updateQueue = createUpdateQueue(fiber.memoizedState);
         queue2 = alternate.updateQueue = createUpdateQueue(
           alternate.memoizedState,
         );
+        // 这里出来的时候，两者是空的，那么queue1 === queue2
       } else {
         // Only one fiber has an update queue. Clone to create a new one.
+        // 在这里的时候，queue1和queue2两者的关系是相等
         queue1 = fiber.updateQueue = cloneUpdateQueue(queue2);
+        // queue1 === queue2
       }
     } else {
       if (queue2 === null) {
         // Only one fiber has an update queue. Clone to create a new one.
+        // 只有队列1的时候，那么两者也是相等的
         queue2 = alternate.updateQueue = cloneUpdateQueue(queue1);
+        // queue1 === queue2
       } else {
         // Both owners have an update queue.
+        // ?
       }
     }
   }
+  // 如果是单链的时候，也就是说只有queue1，那么说明queue1大于等于quque2  -> 能否证明？假如说入队操作仅仅只有这里的话，那么可以证明，但是就怕其他地方存在入队操作！不能证明！
+  // queue1 和 queue2 共享一个链式结构，它们是包含关系还是错位关系？
   if (queue2 === null || queue1 === queue2) {
     // There's only a single queue.
     appendUpdateToQueue(queue1, update);
@@ -284,6 +299,9 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
       appendUpdateToQueue(queue1, update);
       appendUpdateToQueue(queue2, update);
     } else {
+      // 如何理解?
+      // 1. queue1和queue2都是链队列，并且共享这个数据结构。所以两者在末尾进行添加节点的操作结果是共享的，所以只要一个节点添加即可
+      // 2. 但是此时queue2的lastUpdate并不是指向队头，而是指向第二个，所以需要进行更正
       // Both queues are non-empty. The last update is the same in both lists,
       // because of structural sharing. So, only append to one of the lists.
       appendUpdateToQueue(queue1, update);
