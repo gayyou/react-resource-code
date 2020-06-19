@@ -333,7 +333,7 @@ export function updateContainer(
     current,
     suspenseConfig
   );
-  console.log('callback', callback, element)
+
   return updateContainerAtExpirationTime(
     element,
     container,

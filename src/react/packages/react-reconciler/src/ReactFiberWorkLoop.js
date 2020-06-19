@@ -407,24 +407,28 @@ export function scheduleUpdateOnFiber(
   checkForNestedUpdates();
   warnAboutInvalidUpdatesOnClassComponentsInDEV(fiber);
 
+  // 从更新的fiber开始向上进行更新操作，将childExpirationTime更新为最大的到期时间
   const root = markUpdateTimeFromFiberToRoot(fiber, expirationTime);
   if (root === null) {
     warnAboutUpdateOnUnmountedFiberInDEV(fiber);
     return;
   }
 
+  // 看看本次更新是否可以去打断当前的render
   checkForInterruption(fiber, expirationTime);
   recordScheduleUpdate();
 
   // TODO: computeExpirationForFiber also reads the priority. Pass the
-  // priority as an argument to that function and this one.
+  //  priority as an argument to that function and this one.
   const priorityLevel = getCurrentPriorityLevel();
 
   if (expirationTime === Sync) {
     if (
       // Check if we're inside unbatchedUpdates
+      // 这个就是判断是否是unbatchedUpdates
       (executionContext & LegacyUnbatchedContext) !== NoContext &&
       // Check if we're not already rendering
+      // 判断不在renderContext和commitContext环境下
       (executionContext & (RenderContext | CommitContext)) === NoContext
     ) {
       // Register pending interactions on the root to avoid losing traced interaction data.
@@ -476,19 +480,24 @@ export const scheduleWork = scheduleUpdateOnFiber;
 // work without treating it as a typical update that originates from an event;
 // e.g. retrying a Suspense boundary isn't an update, but it does schedule work
 // on a fiber.
+// 到期时间越大，优先级别就越高，那么每次执行这个函数的时候，都会在整个树进行更新expirationTime，数值越高，优先级别越大
 function markUpdateTimeFromFiberToRoot(fiber, expirationTime) {
   // Update the source fiber's expiration time
   if (fiber.expirationTime < expirationTime) {
+    // fiber到期时间比expirationTime早，说明已经更新过了，那么此时需要重新update
     fiber.expirationTime = expirationTime;
   }
   let alternate = fiber.alternate;
   if (alternate !== null && alternate.expirationTime < expirationTime) {
+    // 这里有个疑惑：alternate的到期时间和fiber的到期时间是什么关系？
     alternate.expirationTime = expirationTime;
   }
   // Walk the parent path to the root and update the child expiration time.
+  // 在创建更新的时候，需要向上进行遍历找到根节点。在遍历的过程中，将所有遍历的节点的childExpirationTime进行更新为最新的到期时间
   let node = fiber.return;
   let root = null;
   if (node === null && fiber.tag === HostRoot) {
+    // 如果fiber为根节点的时候，那么root为fiber.stateNode
     root = fiber.stateNode;
   } else {
     while (node !== null) {
@@ -539,6 +548,7 @@ function markUpdateTimeFromFiberToRoot(fiber, expirationTime) {
       }
     }
     // Mark that the root has a pending update.
+    // 在根节点进行标记一个正在等待执行的更新
     markRootUpdatedAtTime(root, expirationTime);
   }
 
@@ -1010,6 +1020,7 @@ function finishConcurrentRender(
 // This is the entry point for synchronous tasks that don't go
 // through Scheduler
 function performSyncWorkOnRoot(root) {
+  console.log(root);
   // Check if there's expired work on this root. Otherwise, render at Sync.
   const lastExpiredTime = root.lastExpiredTime;
   const expirationTime = lastExpiredTime !== NoWork ? lastExpiredTime : Sync;
@@ -2618,6 +2629,7 @@ function stopInterruptedWorkLoopTimer() {
   interruptedBy = null;
 }
 
+// 如果正在渲染的优先级别小于想要进行更新的优先级别，那么进行更新操作
 function checkForInterruption(
   fiberThatReceivedUpdate: Fiber,
   updateExpirationTime: ExpirationTime,
